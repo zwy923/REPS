@@ -3,9 +3,10 @@ import scala.io.StdIn.readLine
 object Main extends App {
   val plantManager = new PlantManager()
   private val plantScheduler = new PlantScheduler(plantManager)
-  private val dataCollector = new DataCollector(plantManager, "data.csv")
   val weatherData = new WeatherData()
-
+  private val dataCollector = new DataCollector(plantManager, "data.csv", weatherData)
+  // read data
+  dataCollector.loadData()
   private def printMenu(): Unit = {
     println("\n--- Renewable Energy Plant System ---")
     println("1. Add a new plant")
@@ -17,6 +18,7 @@ object Main extends App {
     println("8. Balance energy output")
     println("9. Collect data")
     println("10. Analyze data")
+    println("11. Show all facilities")
     println("0. Exit")
     println("--------------------------------------")
   }
@@ -41,21 +43,25 @@ object Main extends App {
           case _ => throw new IllegalArgumentException("Invalid plant type.")
         }
         plantManager.addPlant(plant)
+        dataCollector.collectData() // update information
         println(s"Added a new $plantType plant with ID: $plantId")
       case 2 =>
         // Remove a plant
         val plantId = readLine("Enter the ID of the plant to remove: ").trim
         plantManager.removePlant(plantId)
+        dataCollector.collectData() // update information
         println(s"Removed the plant with ID: $plantId")
       case 3 =>
         // Start a plant
         val plantId = readLine("Enter the ID of the plant to start: ").trim
         plantManager.startPlant(plantId)
+        dataCollector.collectData()
         println(s"Started the plant with ID: $plantId")
       case 4 =>
         // Shutdown a plant
         val plantId = readLine("Enter the ID of the plant to shutdown: ").trim
         plantManager.shutdownPlant(plantId)
+        dataCollector.collectData()
         println(s"Shutdown the plant with ID: $plantId")
       case 6 =>
         // Check total output
@@ -82,7 +88,17 @@ object Main extends App {
         println(s"Mode: ${dataAnalyzer.mode}")
         println(s"Range: ${dataAnalyzer.range}")
         println(s"Midrange: ${dataAnalyzer.midRange}")
-
+      case 11 =>
+        // Show all facilities
+        val allPlants = plantManager.getAllPlants
+        if (allPlants.nonEmpty) {
+          println("All Facilities:")
+          allPlants.foreach { case (id, plant) =>
+            println(s"ID: $id, Type: ${plant.getClass.getSimpleName}, Status: ${plant.getStatus}, Output: ${plant.getCurrentOutput} MW")
+          }
+        } else {
+          println("No facilities found.")
+        }
       case 0 =>
         println("Exiting the program...")
         running = false

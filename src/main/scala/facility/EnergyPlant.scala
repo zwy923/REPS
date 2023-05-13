@@ -6,6 +6,9 @@ abstract class EnergyPlant(val id: String) {
 
   def getStatus: String = status
 
+  def setStatus(newStatus: String): Unit = {
+    status = newStatus
+  }
   def start(): Unit = {
     status = "Running"
     updateOutput()
