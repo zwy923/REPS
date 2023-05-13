@@ -1,13 +1,22 @@
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import scala.concurrent.duration.FiniteDuration
 import scala.io.StdIn.readLine
 import scala.sys.exit
+import scala.io.Source
 
 object Main extends App {
   val plantManager = new PlantManager()
   private val plantScheduler = new PlantScheduler(plantManager)
   val weatherData = new WeatherData()
+  val alertSystem = new AlertSystem(plantManager)
+  val analyzer = new DataAnalyzer("historydata.csv")
   val dataCollector = new DataCollector(plantManager, "data.csv", weatherData)
   // read data
   dataCollector.loadData()
+
+  val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
   private def printMenu(): Unit = {
     println("\n--- Renewable Energy Plant System ---")
     println("1. Add a new plant")
@@ -17,7 +26,7 @@ object Main extends App {
     println("6. Check total output")
     println("7. Update energy demand")
     println("8. Balance energy output")
-    println("9. Collect data")
+    println("9. Simulate running")
     println("10. Analyze data")
     println("11. Show all facilities")
     println("0. Exit")
@@ -78,17 +87,41 @@ object Main extends App {
         plantScheduler.balanceEnergyOutput()
         println("Balanced the energy output.")
       case 9 =>
-        // Collect data
-        dataCollector.collectData()
-        println("Collected the data.")
+        // Simulate running
+        val period = readLine("Enter the simulation period (day, week, month): ").trim.toLowerCase
+        val days = period match {
+          case "day" => 1
+          case "week" => 7
+          case "month" => 30
+          case _ => throw new IllegalArgumentException("Invalid period. Please enter day, week, or month.")
+        }
+
+        val source = Source.fromFile("historydata.csv")
+        val lines = source.getLines().toList
+        source.close()
+        val nonEmptyLines = lines.filter(_.trim.nonEmpty)
+        val startDate = if (nonEmptyLines.isEmpty) {
+          LocalDate.of(2023, 5, 1)
+        } else {
+          val lastDate = LocalDate.parse(nonEmptyLines.last.split(",")(0).trim)
+          lastDate.plusDays(1)
+        }
+
+        val simulationRunner = new SimulationRunner(startDate, plantManager, alertSystem, weatherData)
+        simulationRunner.runSimulation(days)
+        println(s"Simulation of $period completed.")
+
       case 10 =>
         // Analyze data
-        val dataAnalyzer = new DataAnalyzer("data.csv")
-        println(s"Mean: ${dataAnalyzer.mean}")
-        println(s"Median: ${dataAnalyzer.median}")
-        println(s"Mode: ${dataAnalyzer.mode}")
-        println(s"Range: ${dataAnalyzer.range}")
-        println(s"Midrange: ${dataAnalyzer.midRange}")
+        println("Please enter the start date (format: yyyy-mm-dd): ")
+        val startDateStr = scala.io.StdIn.readLine()
+        val startDate = LocalDate.parse(startDateStr, formatter)
+
+        println("Please enter the end date (format: yyyy-mm-dd): ")
+        val endDateStr = scala.io.StdIn.readLine()
+        val endDate = LocalDate.parse(endDateStr, formatter)
+
+        analyzer.analyze("day", startDate, endDate)
       case 11 =>
         // Show all facilities
         dataCollector.collectData()

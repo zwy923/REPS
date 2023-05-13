@@ -23,4 +23,11 @@ class WeatherData {
   def getSunlightIntensity: Double = sunlightIntensity
   def getWindSpeed: Double = windSpeed
   def getWaterFlow: Double = waterFlow
+
+  def updateData(): Unit = {
+    // Simulate random weather data
+    waterFlow = Random.nextDouble()
+    sunlightIntensity = Random.nextDouble()
+    windSpeed = Random.nextDouble()
+  }
 }

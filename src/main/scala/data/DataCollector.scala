@@ -15,6 +15,11 @@ class DataCollector(plantManager: PlantManager, fileName: String, weatherData: W
         val facilityType = fields(1)
         val status = fields(2)
         val maxOutput = fields(4).toDouble
+        val deviceStatus = fields(5) match {
+          case "Normal" => DeviceStatus.Normal
+          case "Damaged" => DeviceStatus.Damaged
+          case _ => throw new IllegalArgumentException(s"Invalid device status: ${fields(5)}")
+        }
         val plant = facilityType match {
           case "Solar Panel" =>
             val solarPanel = new SolarPanel(plantId, maxOutput, weatherData)
@@ -31,6 +36,7 @@ class DataCollector(plantManager: PlantManager, fileName: String, weatherData: W
           case _ => throw new IllegalArgumentException(s"Invalid facility type: $facilityType")
         }
         plant.setStatus(status)
+        plant.setDeviceStatus(deviceStatus)
         plantManager.addPlant(plant)
       }
     }
@@ -40,7 +46,7 @@ class DataCollector(plantManager: PlantManager, fileName: String, weatherData: W
     val file = new File(fileName)
     val writer = new BufferedWriter(new FileWriter(file))
 
-    writer.write("Plant ID, Facility Type, Status, Current Output, Max Output")
+    writer.write("Plant ID, Facility Type, Status, Current Output, Max Output, Device Status")
     writer.newLine()
 
     val allPlants = plantManager.getAllPlants
@@ -52,8 +58,9 @@ class DataCollector(plantManager: PlantManager, fileName: String, weatherData: W
       }
       val status = plant.getStatus
       val currentOutput = plant.getCurrentOutput
-      val maxOutput = plant.getMaxOutput // Add maxOutput
-      writer.write(s"$id, $facilityType, $status, $currentOutput, $maxOutput")
+      val maxOutput = plant.getMaxOutput
+      val deviceStatus = plant.getDeviceStatus
+      writer.write(s"$id, $facilityType, $status, $currentOutput, $maxOutput, $deviceStatus")
       writer.newLine()
     }
 

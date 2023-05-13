@@ -7,6 +7,4 @@ object FacilityUtils {
     prefix + id
   }
 
-
-
 }
