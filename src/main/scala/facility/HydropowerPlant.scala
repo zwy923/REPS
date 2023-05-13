@@ -1,4 +1,5 @@
-class HydropowerPlant(id: String, val maxOutput: Double, weatherData: WeatherData) extends EnergyPlant(id) {
+class HydropowerPlant(id: String, maxOutput: Double, weatherData: WeatherData) extends EnergyPlant(id, maxOutput) {
+
   override def updateOutput(): Unit = {
     if (getStatus == "Running") {
       // Assume the output is proportional to the water flow
@@ -11,6 +12,4 @@ class HydropowerPlant(id: String, val maxOutput: Double, weatherData: WeatherDat
     }
   }
 
-  // You can add more specific methods for HydropowerPlant here
-  // ...
 }

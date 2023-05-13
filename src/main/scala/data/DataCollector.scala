@@ -14,17 +14,18 @@ class DataCollector(plantManager: PlantManager, fileName: String, weatherData: W
         val plantId = fields(0)
         val facilityType = fields(1)
         val status = fields(2)
+        val maxOutput = fields(4).toDouble
         val plant = facilityType match {
           case "Solar Panel" =>
-            val solarPanel = new SolarPanel(plantId, 0.0, weatherData) // Set initial current output as 0.0
+            val solarPanel = new SolarPanel(plantId, maxOutput, weatherData)
             solarPanel.updateOutput() // Update current output based on weather data
             solarPanel
           case "Wind Turbine" =>
-            val windTurbine = new WindTurbine(plantId, 0.0, weatherData) // Set initial current output as 0.0
+            val windTurbine = new WindTurbine(plantId, maxOutput, weatherData)
             windTurbine.updateOutput() // Update current output based on weather data
             windTurbine
           case "Hydropower Plant" =>
-            val hydropowerPlant = new HydropowerPlant(plantId, 0.0, weatherData) // Set initial current output as 0.0
+            val hydropowerPlant = new HydropowerPlant(plantId, maxOutput, weatherData)
             hydropowerPlant.updateOutput() // Update current output based on weather data
             hydropowerPlant
           case _ => throw new IllegalArgumentException(s"Invalid facility type: $facilityType")
@@ -39,7 +40,7 @@ class DataCollector(plantManager: PlantManager, fileName: String, weatherData: W
     val file = new File(fileName)
     val writer = new BufferedWriter(new FileWriter(file))
 
-    writer.write("Plant ID, Facility Type, Status, Current Output")
+    writer.write("Plant ID, Facility Type, Status, Current Output, Max Output")
     writer.newLine()
 
     val allPlants = plantManager.getAllPlants
@@ -51,7 +52,8 @@ class DataCollector(plantManager: PlantManager, fileName: String, weatherData: W
       }
       val status = plant.getStatus
       val currentOutput = plant.getCurrentOutput
-      writer.write(s"$id, $facilityType, $status, $currentOutput")
+      val maxOutput = plant.getMaxOutput // Add maxOutput
+      writer.write(s"$id, $facilityType, $status, $currentOutput, $maxOutput")
       writer.newLine()
     }
 

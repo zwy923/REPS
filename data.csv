@@ -1,2 +1,4 @@
-Plant ID, Facility Type, Status, Current Output
-solarGGWFC, Solar Panel, Shutdown, 0.0
+Plant ID, Facility Type, Status, Current Output, Max Output
+solarZ739L, Solar Panel, Running, 98.2964647271899, 100.0
+windWTT5L, Wind Turbine, Running, 50.15218537262373, 100.0
+hydroHUKPM, Hydropower Plant, Running, 48.19459703102069, 100.0

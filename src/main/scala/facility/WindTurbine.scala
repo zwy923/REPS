@@ -1,4 +1,4 @@
-class WindTurbine(id: String, val maxOutput: Double, weatherData: WeatherData) extends EnergyPlant(id) {
+class WindTurbine(id: String, maxOutput: Double, weatherData: WeatherData) extends EnergyPlant(id, maxOutput) {
   override def updateOutput(): Unit = {
     if (getStatus == "Running") {
       // Assume the output is proportional to the wind speed

@@ -4,7 +4,7 @@ object Main extends App {
   val plantManager = new PlantManager()
   private val plantScheduler = new PlantScheduler(plantManager)
   val weatherData = new WeatherData()
-  private val dataCollector = new DataCollector(plantManager, "data.csv", weatherData)
+  val dataCollector = new DataCollector(plantManager, "data.csv", weatherData)
   // read data
   dataCollector.loadData()
   private def printMenu(): Unit = {
@@ -23,7 +23,7 @@ object Main extends App {
     println("--------------------------------------")
   }
 
-  var running = true
+  private var running = true
 
   while(running) {
     printMenu()

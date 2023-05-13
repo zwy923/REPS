@@ -1,3 +1,5 @@
+import Main.dataCollector
+
 class PlantScheduler(plantManager: PlantManager) {
   private var energyDemand: Double = 0.0
 
@@ -7,12 +9,6 @@ class PlantScheduler(plantManager: PlantManager) {
       energyDemand = newDemand
     else
       throw new IllegalArgumentException("Energy demand must be non-negative.")
-  }
-
-  // Check if the current energy output meets the demand
-  def checkEnergyOutput(): Boolean = {
-    val totalOutput = plantManager.getTotalOutput
-    totalOutput >= energyDemand
   }
 
   // Try to balance the energy output and the demand
@@ -25,6 +21,7 @@ class PlantScheduler(plantManager: PlantManager) {
         if(plant.getStatus == "Shutdown") {
           plant.start()
           plant.updateOutput()
+          dataCollector.collectData()
         }
       }
     }
@@ -34,6 +31,7 @@ class PlantScheduler(plantManager: PlantManager) {
         if(plant.getStatus == "Running") {
           plant.shutdown()
           plant.updateOutput()
+          dataCollector.collectData()
         }
       }
     }

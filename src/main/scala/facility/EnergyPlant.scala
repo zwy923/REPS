@@ -1,6 +1,8 @@
-abstract class EnergyPlant(val id: String) {
+abstract class EnergyPlant(val id: String, val maxOutput: Double) {
   protected var currentOutput: Double = 0.0
   private var status: String = "Shutdown"
+
+  def getMaxOutput: Double = maxOutput
 
   def getCurrentOutput: Double = currentOutput
 
