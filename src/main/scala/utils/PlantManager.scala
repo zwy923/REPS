@@ -50,4 +50,3 @@ class PlantManager {
     plants.values.map(_.getCurrentOutput).sum
   }
 }
-

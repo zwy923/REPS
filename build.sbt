@@ -6,3 +6,5 @@ lazy val root = (project in file("."))
   .settings(
     name := "project 2"
   )
+
+libraryDependencies += "org.apache.poi" % "poi-ooxml" % "5.2.2"

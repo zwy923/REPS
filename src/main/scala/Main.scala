@@ -1,101 +1,93 @@
-import scala.io.StdIn
+import scala.io.StdIn.readLine
 
-object Main {
-  def main(args: Array[String]): Unit = {
-    val plantManager = new PlantManager
-    val plantScheduler = new PlantScheduler(plantManager)
-    val reportSystem = new ReportSystem(plantManager)
+object Main extends App {
+  val plantManager = new PlantManager()
+  private val plantScheduler = new PlantScheduler(plantManager)
+  private val dataCollector = new DataCollector(plantManager, "data.csv")
+  val weatherData = new WeatherData()
 
-    var running = true
+  private def printMenu(): Unit = {
+    println("\n--- Renewable Energy Plant System ---")
+    println("1. Add a new plant")
+    println("2. Remove a plant")
+    println("3. Start a plant")
+    println("4. Shutdown a plant")
+    println("6. Check total output")
+    println("7. Update energy demand")
+    println("8. Balance energy output")
+    println("9. Collect data")
+    println("10. Analyze data")
+    println("0. Exit")
+    println("--------------------------------------")
+  }
 
-    while (running) {
-      println(
-        """
-          |1. Add a plant
-          |2. Remove a plant
-          |3. Get a plant
-          |4. Shutdown plant
-          |5. Start plant
-          |6. Update energy demand
-          |7. Balance energy output
-          |8. Generate status report
-          |9. Generate output report
-          |0. Exit
-          |Choose an option:
-        """.stripMargin)
-      val option = StdIn.readInt()
+  var running = true
 
-      option match {
-        case 1 =>
-          println(
-            """
-              |Choose a plant type:
-              |1. Solar Plant
-              |2. Wind Plant
-              |3. Hydro Plant
-            """.stripMargin)
-          val plantType = StdIn.readInt()
-          println("Enter plant ID:")
-          val id = StdIn.readLine()
-          println("Enter plant capacity:")
-          val capacity = StdIn.readDouble()
+  while(running) {
+    printMenu()
 
-          plantType match {
-            case 1 =>
-              println("Enter the number of solar panels:")
-              val panels = StdIn.readInt()
-              val solarPlant = new SolarPlant(id, capacity, panels)
-              plantManager.addPlant(solarPlant)
-            case 2 =>
-              println("Enter the number of turbines:")
-              val turbines = StdIn.readInt()
-              val windPlant = new WindPlant(id, capacity, turbines)
-              plantManager.addPlant(windPlant)
-            case 3 =>
-              println("Enter the number of turbines:")
-              val turbines = StdIn.readInt()
-              val hydroPlant = new HydroPlant(id, capacity, turbines)
-              plantManager.addPlant(hydroPlant)
-            case _ =>
-              println("Invalid plant type. Please choose a number between 1 and 3.")
-          }
-        case 2 =>
-          println("Enter plant ID:")
-          val id = StdIn.readLine()
-          plantManager.removePlant(id)
-        case 3 =>
-          println("Enter plant ID:")
-          val id = StdIn.readLine()
-          val plant = plantManager.getPlant(id)
-          plant match {
-            case Some(p) => println(s"Plant: ${p.id}, Status: ${p.getStatus}, Current Output: ${p.getCurrentOutput}")
-            case None => println("No plant found with the given ID.")
-          }
-        case 4 =>
-          println("Enter plant ID:")
-          val id = StdIn.readLine()
-          plantManager.shutdownPlant(id)
-          plantManager.updatePlantOutput(id)
-        case 5 =>
-          println("Enter plant ID:")
-          val id = StdIn.readLine()
-          plantManager.startPlant(id)
-          plantManager.updatePlantOutput(id)
-        case 6 =>
-          println("Enter new energy demand:")
-          val newDemand = StdIn.readDouble()
-          plantScheduler.updateEnergyDemand(newDemand)
-        case 7 =>
-          plantScheduler.balanceEnergyOutput()
-        case 8 =>
-          reportSystem.generateStatusReport()
-        case 9 =>
-          reportSystem.generateOutputReport()
-        case 0 =>
-          running = false
-        case _ =>
-          println("Invalid option. Please choose a number between 1 and 11.")
-      }
+    val option = readLine("Select an option: ").trim.toInt
+
+    option match {
+      case 1 =>
+        // Add a new plant
+        val plantType = readLine("Enter the type of the plant (solar, wind, hydro): ").trim.toLowerCase
+        val plantId = FacilityUtils.generateId(plantType, 5)
+        val maxOutput = readLine("Enter the maximum output of the plant (in MW): ").trim.toDouble
+        val plant = plantType match {
+          case "solar" => new SolarPanel(plantId, maxOutput, weatherData)
+          case "wind" => new WindTurbine(plantId, maxOutput, weatherData)
+          case "hydro" => new HydropowerPlant(plantId, maxOutput, weatherData)
+          case _ => throw new IllegalArgumentException("Invalid plant type.")
+        }
+        plantManager.addPlant(plant)
+        println(s"Added a new $plantType plant with ID: $plantId")
+      case 2 =>
+        // Remove a plant
+        val plantId = readLine("Enter the ID of the plant to remove: ").trim
+        plantManager.removePlant(plantId)
+        println(s"Removed the plant with ID: $plantId")
+      case 3 =>
+        // Start a plant
+        val plantId = readLine("Enter the ID of the plant to start: ").trim
+        plantManager.startPlant(plantId)
+        println(s"Started the plant with ID: $plantId")
+      case 4 =>
+        // Shutdown a plant
+        val plantId = readLine("Enter the ID of the plant to shutdown: ").trim
+        plantManager.shutdownPlant(plantId)
+        println(s"Shutdown the plant with ID: $plantId")
+      case 6 =>
+        // Check total output
+        val totalOutput = plantManager.getTotalOutput
+        println(s"Total output: $totalOutput MW")
+      case 7 =>
+        // Update energy demand
+        val newDemand = readLine("Enter the new energy demand: ").trim.toDouble
+        plantScheduler.updateEnergyDemand(newDemand)
+        println(s"Updated the energy demand to: $newDemand MW")
+      case 8 =>
+        // Balance energy output
+        plantScheduler.balanceEnergyOutput()
+        println("Balanced the energy output.")
+      case 9 =>
+        // Collect data
+        dataCollector.collectData()
+        println("Collected the data.")
+      case 10 =>
+        // Analyze data
+        val dataAnalyzer = new DataAnalyzer("data.csv")
+        println(s"Mean: ${dataAnalyzer.mean}")
+        println(s"Median: ${dataAnalyzer.median}")
+        println(s"Mode: ${dataAnalyzer.mode}")
+        println(s"Range: ${dataAnalyzer.range}")
+        println(s"Midrange: ${dataAnalyzer.midRange}")
+
+      case 0 =>
+        println("Exiting the program...")
+        running = false
+      case _ =>
+        println("Invalid option. Please try again.")
     }
   }
 }
