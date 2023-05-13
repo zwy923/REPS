@@ -5,7 +5,7 @@ class DataAnalyzer(fileName: String) {
   // Read data from file and return it as a list of doubles
   private def getData: List[Double] = {
     val source = Source.fromFile(fileName)
-    val data = source.getLines().drop(1).map(line => line.split(",")(1).trim.toDouble).toList
+    val data = source.getLines().drop(1).map(line => line.split(",")(3).trim.toDouble).toList
     source.close()
     data
   }

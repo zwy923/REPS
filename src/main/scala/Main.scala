@@ -1,4 +1,5 @@
 import scala.io.StdIn.readLine
+import scala.sys.exit
 
 object Main extends App {
   val plantManager = new PlantManager()
@@ -90,6 +91,7 @@ object Main extends App {
         println(s"Midrange: ${dataAnalyzer.midRange}")
       case 11 =>
         // Show all facilities
+        dataCollector.collectData()
         val allPlants = plantManager.getAllPlants
         if (allPlants.nonEmpty) {
           println("All Facilities:")
@@ -101,7 +103,10 @@ object Main extends App {
         }
       case 0 =>
         println("Exiting the program...")
+
         running = false
+        exit(0)
+
       case _ =>
         println("Invalid option. Please try again.")
     }
