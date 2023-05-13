@@ -1,5 +1,5 @@
 Plant ID, Facility Type, Status, Current Output, Max Output, Device Status
 hydroPHLAU, Hydropower Plant, Shutdown, 0.0, 100.0, Damaged
-solar7EKGW, Solar Panel, Running, 63.835872754101885, 100.0, Normal
-wind4X63G, Wind Turbine, Running, 60.75585323258227, 100.0, Normal
-solar0NEBE, Solar Panel, Running, 63.835872754101885, 200.0, Normal
+solar7EKGW, Solar Panel, Running, 53.84232408395898, 100.0, Normal
+wind4X63G, Wind Turbine, Running, 84.29368713541263, 100.0, Normal
+solar0NEBE, Solar Panel, Running, 53.84232408395898, 200.0, Normal

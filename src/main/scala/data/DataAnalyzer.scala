@@ -34,11 +34,11 @@ class DataAnalyzer(fileName: String) {
       val midRange = (data.max + data.min) / 2
 
       println(s"Analysis from $startDate to $endDate:")
-      println(f"Mean: $mean%.2f")
-      println(f"Median: $median%.2f")
-      println(f"Mode: $mode%.2f")
-      println(f"Range: $range%.2f")
-      println(f"Midrange: $midRange%.2f")
+      println(f"Average daily output(Mean): $mean%.2f")
+      println(f"Median daily output: $median%.2f")
+      println(f"The most common daily output(Mode): $mode%.2f")
+      println(f"The range of daily output: $range%.2f")
+      println(f"The midrange of daily output: $midRange%.2f")
     } else {
       println(s"No data found from $startDate to $endDate.")
     }
