@@ -2,7 +2,6 @@ import scala.io.Source
 
 class DataAnalyzer(fileName: String) {
 
-  // Read data from file and return it as a list of doubles
   private def getData: List[Double] = {
     val source = Source.fromFile(fileName)
     val data = source.getLines().drop(1).map(line => line.split(",")(3).trim.toDouble).toList
@@ -18,7 +17,6 @@ class DataAnalyzer(fileName: String) {
   def median: Double = {
     val sortedData = getData.sorted
     val mid = sortedData.size / 2
-    // If the number of data points is odd, return the middle one, otherwise return the average of the two middle ones
     if (sortedData.size % 2 == 1) sortedData(mid) else (sortedData(mid - 1) + sortedData(mid)) / 2.0
   }
 

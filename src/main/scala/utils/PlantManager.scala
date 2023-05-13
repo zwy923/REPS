@@ -25,13 +25,6 @@ class PlantManager {
     plants.toMap
   }
 
-  def updatePlantOutput(id: String): Unit = {
-    getPlant(id) match {
-      case Some(plant) => plant.updateOutput()
-      case None => throw new IllegalArgumentException("The plant does not exist.")
-    }
-  }
-
   def shutdownPlant(id: String): Unit = {
     getPlant(id) match {
       case Some(plant) => plant.shutdown()

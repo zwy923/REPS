@@ -7,8 +7,6 @@ object FacilityUtils {
     prefix + id
   }
 
-  def elapsedTimeInSeconds(startTime: Long, endTime: Long): Long = {
-    (endTime - startTime) / 1000
-  }
+
 
 }

@@ -21,8 +21,6 @@ class WeatherData {
   timer.schedule(task, 0, 60 * 1000)
 
   def getSunlightIntensity: Double = sunlightIntensity
-
   def getWindSpeed: Double = windSpeed
-
   def getWaterFlow: Double = waterFlow
 }
